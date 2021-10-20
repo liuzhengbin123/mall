@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/bemall
+      username: root
+      password: liu123
+mybatis:
+  mapper-locations: classpath:mappers/*Mapper.xml
+  type-aliases-package: com.lzb.bemall.entity
+  configuration:
+    call-setters-on-nulls: true

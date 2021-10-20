@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzb.bemall.dao.CategoryMapper">
+  <resultMap id="BaseResultMap" type="com.lzb.bemall.entity.Category">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="category_level" jdbcType="INTEGER" property="categoryLevel" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="category_icon" jdbcType="VARCHAR" property="categoryIcon" />
+    <result column="category_slogan" jdbcType="VARCHAR" property="categorySlogan" />
+    <result column="category_pic" jdbcType="VARCHAR" property="categoryPic" />
+    <result column="category_bg_color" jdbcType="VARCHAR" property="categoryBgColor" />
+  </resultMap>
+
+    <select id="selectAllByCategory" resultMap="BaseResultMap">
+        select
+                c1.category_id 'category_id1',
+                c1.category_name 'category_name1',
+                c1.category_level 'category_level1',
+                c1.parent_id 'parent_id1',
+                c1.category_icon 'category_icon1',
+                c1.category_slogan 'category_slogan1',
+                c1.category_pic 'category_pic1',
+                c1.category_bg_color 'category_bg_color1',
+                c2.category_name 'category_name2',
+                c2.parent_id 'parent_id2',
+                c2.category_level 'category_level2',
+                c3.category_name 'category_name3',
+                c3.parent_id 'parent_id3',
+                c3.category_level 'category_level3'
+        FROM category c1 INNER JOIN category c2 on c1.category_id=c2.parent_id
+        LEFT JOIN  category c3 on  c3.parent_id=c2.category_id
+        where c1.category_level = 1
+
+    </select>
+
+
+    <resultMap id="s" type="com.lzb.bemall.entity.CategoryVo">
+        <id column="category_id" jdbcType="INTEGER" property="categoryId" />
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+        <result column="category_level" jdbcType="INTEGER" property="categoryLevel" />
+        <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+        <result column="category_icon" jdbcType="VARCHAR" property="categoryIcon" />
+        <result column="category_slogan" jdbcType="VARCHAR" property="categorySlogan" />
+        <result column="category_pic" jdbcType="VARCHAR" property="categoryPic" />
+        <result column="category_bg_color" jdbcType="VARCHAR" property="categoryBgColor" />
+        <collection column="category_id" property="categoryVoList" select="selectAllByCategory2" />
+    </resultMap>
+    <select id="selectAllByCategory2" resultMap="s">
+        select
+        category_id,
+        category_name,
+        category_level,
+        parent_id,
+        category_icon,
+        category_slogan,
+        category_pic,
+        category_bg_color
+        from category
+        where parent_id=#{parentId}
+
+    </select>
+
+
+    <resultMap id="BaseResultMapVo3" type="com.lzb.bemall.entity.CategoryVo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="category_id" jdbcType="INTEGER" property="categoryId" />
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+        <result column="category_level" jdbcType="INTEGER" property="categoryLevel" />
+        <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+        <result column="category_icon" jdbcType="VARCHAR" property="categoryIcon" />
+        <result column="category_slogan" jdbcType="VARCHAR" property="categorySlogan" />
+        <result column="category_pic" jdbcType="VARCHAR" property="categoryPic" />
+        <result column="category_bg_color" jdbcType="VARCHAR" property="categoryBgColor" />
+        <collection property="productVos" column="category_id" select="com.lzb.bemall.dao.ProductMapper.selectTop6ByCategory"></collection>
+    </resultMap>
+    <select id="selectFirstLevelCategories" resultMap="BaseResultMapVo3">
+        SELECT
+	category_id,
+	category_name,
+	category_level,
+	parent_id,
+	category_icon,
+	category_slogan,
+	category_pic,
+	category_bg_color
+from category WHERE category_level=1;
+    </select>
+</mapper>
